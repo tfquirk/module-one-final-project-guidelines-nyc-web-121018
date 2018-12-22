@@ -2,4 +2,9 @@ require_relative '../config/environment'
 
 
 
-puts "HELLO WORLD"
+welcome
+answer = user_imput
+user = Investor.find_by(name: answer)
+options
+
+binding.pry

@@ -3,8 +3,9 @@ require_relative '../config/environment'
 
 
 welcome
-answer = user_imput
-user = Investor.find_by(name: answer)
-options
+username = user_imput
+user = Investor.find_by(name: username)
+login(username)
+
 
 binding.pry

@@ -4,6 +4,9 @@ class Investor < ActiveRecord::Base
   has_many :stock, through: :trade
   has_many :account
 
+  #----------- end class methods -----------------------
+  #----------- start instance methods ------------------
+
   def balance
     account = Account.find_by(investor_id: self.id)
     account.balance
@@ -28,6 +31,26 @@ class Investor < ActiveRecord::Base
           puts "\tPercent change: +#{((current_quote * stock.num_shares - (stock.purchase_price)) / stock.purchase_price * 100).round(2)}%\n"
         end
     end
+  end
+
+  def deposit_funds(amount)
+    account = Account.find_by(investor_id: self.id)
+    account.balance += amount
+    account.save
+    puts "Your account balance is now: $#{account.balance}"
+  end
+
+  def debit_funds(amount)
+    account = Account.find_by(investor_id: self.id)
+    account.balance -= amount
+    account.save
+    puts "Your account balance is now: $#{account.balance}"
+  end
+
+  def shares_owned # returns the number of shares owned and which company
+    trades = Trade.all.select {|trade| trade.investor_id == self.id if trade.bought_sold == "bought"}
+    puts "#{self.name.split(" ").first}, you currently own:"
+    trades.each {|trade| puts "\t#{trade.num_shares} share(s) of #{Stock.all.find(trade.stock_id).company}"}
   end
 
 

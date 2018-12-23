@@ -49,8 +49,33 @@ class Investor < ActiveRecord::Base
 
   def shares_owned # returns the number of shares owned and which company
     trades = Trade.all.select {|trade| trade.investor_id == self.id if trade.bought_sold == "bought"}
-    puts "#{self.name.split(" ").first}, you currently own:"
+    puts "\n\n#{self.name.split(" ").first}, you currently own:"
     trades.each {|trade| puts "\t#{trade.num_shares} share(s) of #{Stock.all.find(trade.stock_id).company}"}
+  end
+
+  def stock_quote(symbol)
+    new_quote = IEX::Resources::Quote.get(symbol)
+    if !Stock.all.find_by(company: new_quote.company, date: Date.today)
+      new_quote
+    else
+      Stock.create(company: new_quote.company_name, symbol: new_quote.symbol, shares_available: rand(1500),
+          sector: new_quote.sector, date: stock_date.date.to_s,open_price: stock_date.open,
+          close_price: stock_date.close)
+      end
+  end
+
+  def buy_stock(symbol)
+    stock = stock_quote(symbol)
+    puts "\nYour stock is currently trading at $#{stock.delayed_price} per share."
+    puts "You can currently afford #{self.balance / stock.delayed_price} share(s)"
+    puts  "\nHow many shares would you like to buy? "
+    answer = gets.chomp
+    new_trade = Trade.create(status: "pending", num_shares: answer, stock_id: stock.id, investor_id: self.id)
+
+    #check if .valid?
+    #completed trade if valid and debit account
+    #if not valid or cannot find stock error message and return to options
+
   end
 
 

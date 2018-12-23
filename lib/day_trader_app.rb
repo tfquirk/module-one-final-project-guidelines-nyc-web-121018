@@ -7,7 +7,11 @@ def user_imput
   gets.chomp
 end
 
-def options
+def call_options(user)
+  options(user)
+end
+
+def options(user)
   puts "\n\nWhat would you like to do?"
   puts "\t 1. Research"
   puts "\t 2. Buy stock"
@@ -15,7 +19,31 @@ def options
   puts "\t 4. Review portfolio"
   puts "\t 5. My bank account balance"
   puts "\t 6. Signout"
+
+  input = gets.chomp
+
+  case input
+  when "1"
+    #run stock lookup method
+  when "2"
+    #run buy stock logic
+  when "3"
+    #run sell stock method
+  when "4"
+    user.shares_owned
+    sleep(5)
+    call_options(user)
+  when "5"
+    #puts out bank account information
+  when "6"
+    puts "\n\nThank you. Have a great day!"
+  else
+    puts "Invalid input. Please pick a number from this list."
+    call_options(user)
+  end
 end
+
+
 
 def login(username)
   first_name = username.split(" ").first
@@ -23,9 +51,10 @@ def login(username)
     puts "\n\nYou do not currently have an account, #{first_name}. Please fill in your information to create one:"
     user = create_new_user(username)
     create_new_bank_account(user)
-    options
+    options(user)
   else
-    options
+    user = Investor.all.find_by(name: username)
+    options(user)
   end
 end
 
@@ -65,12 +94,19 @@ end
 
   def create_new_bank_account(investor)
     new_investor = Account.create(balance: rand(500..20000), investor_id: investor.id, bank_id: rand(6))
+    sleep(0.8)
     puts "."
+    sleep(0.8)
     puts "."
+    sleep(0.8)
     puts "."
+    sleep(0.8)
     puts "."
+    sleep(0.8)
     puts "."
+    sleep(0.8)
     puts "."
-    puts "------- We have linked your bank account.\n"
-    puts "------- You currently have $#{new_investor.balance} in your account available immediately."
+    sleep(0.8)
+    puts "----- We have linked your bank account.\n"
+    puts "----- You currently have $#{new_investor.balance} in your account available immediately."
   end

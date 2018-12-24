@@ -14,11 +14,6 @@ All user account info is kept in the Account class
 
 
 
-
-
-
-
-
 #  Final Project Guidelines
 
 For your final project for Module One, I built a Command Line database application using stock data from the IEX api.

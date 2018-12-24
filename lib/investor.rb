@@ -17,6 +17,15 @@ class Investor < ActiveRecord::Base
     not_sold = trades.select {|trade| trade.bought_sold == "bought"} #select stocks I've bought, but not yet sold
   end
 
+  def print_my_stocks
+    my_stocks.each do |stock| #print out stocks to screen
+        puts Stock.all.find(stock.stock_id).company
+        puts "\tShares: #{stock.num_shares}"
+        puts "\tPurchased for: $#{stock.purchase_price}\n"
+        puts "\tStock ID: #{stock.stock_id}"
+      end
+  end
+
   def my_stocks_analysis
     my_stocks.each do |stock| #print out stocks to screen
         puts Stock.all.find(stock.stock_id).company
@@ -47,36 +56,20 @@ class Investor < ActiveRecord::Base
     puts "Your account balance is now: $#{account.balance}"
   end
 
-  def shares_owned # returns the number of shares owned and which company
-    trades = Trade.all.select {|trade| trade.investor_id == self.id if trade.bought_sold == "bought"}
-    puts "\n\n#{self.name.split(" ").first}, you currently own:"
-    trades.each {|trade| puts "\t#{trade.num_shares} share(s) of #{Stock.all.find(trade.stock_id).company}"}
-  end
+  # print_my_stocks does this currently
+  # def shares_owned # returns the number of shares owned and which company
+  #   trades = Trade.all.select {|trade| trade.investor_id == self.id if trade.bought_sold == "bought"}
+  #   puts "\n\n#{self.name.split(" ").first}, you currently own:"
+  #   trades.each {|trade| puts "\t#{trade.num_shares} share(s) of #{Stock.all.find(trade.stock_id).company}"}
+  # end
 
-  def stock_quote(symbol)
-    new_quote = IEX::Resources::Quote.get(symbol)
-    if !Stock.all.find_by(company: new_quote.company, date: Date.today)
-      new_quote
+  def weekend?(date)
+    if Date.today == Date.today.saturday? || Date.today == Date.today.sunday?
+      puts "Sorry no trades can be made over the weekend"
+      options(self)
     else
-      Stock.create(company: new_quote.company_name, symbol: new_quote.symbol, shares_available: rand(1500),
-          sector: new_quote.sector, date: stock_date.date.to_s,open_price: stock_date.open,
-          close_price: stock_date.close)
-      end
+      return false
+    end
   end
-
-  def buy_stock(symbol)
-    stock = stock_quote(symbol)
-    puts "\nYour stock is currently trading at $#{stock.delayed_price} per share."
-    puts "You can currently afford #{self.balance / stock.delayed_price} share(s)"
-    puts  "\nHow many shares would you like to buy? "
-    answer = gets.chomp
-    new_trade = Trade.create(status: "pending", num_shares: answer, stock_id: stock.id, investor_id: self.id)
-
-    #check if .valid?
-    #completed trade if valid and debit account
-    #if not valid or cannot find stock error message and return to options
-
-  end
-
 
 end # end Investor class

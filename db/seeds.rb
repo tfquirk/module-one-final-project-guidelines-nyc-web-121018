@@ -31,3 +31,8 @@ stock_array = ['AAPL', 'AMZN', 'GOOGL', 'FB', 'CRM', 'CMCSA', 'DIS', 'NFLX',
 #   Account.create(balance: Faker::Number.between(500, 20000), investor_id: Faker::Number.between(40, 60),
 #   bank_id: Faker::Number.between(1, 6))
 # end
+
+# Stock.all.each do |stock|
+#   stock.quote = (stock.open_price + stock.close_price) / 2
+#   stock.save
+# end

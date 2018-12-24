@@ -13,8 +13,37 @@ class Stock < ActiveRecord::Base
     investors.each { |el| puts Investor.all.find(el).name  }
   end
 
+  def self.stock_quote(symbol)
+    IEX::Resources::Quote.get(symbol)
+  end
+
+  def self.find_or_create_stock_from_quote(quote)
+    find_stock = Stock.all.select {|stock| stock.symbol == quote.symbol }
+    if find_stock.last.date == Date.today || find_stock.last.date == prior_friday(Date.today)
+      found_stock = find_stock.last
+      found_stock.quote = quote.delayed_price
+      found_stock.save
+      return found_stock
+    else
+      Stock.create(company: quote.company_name, symbol: quote.symbol, shares_available: rand(1500),
+          sector: quote.sector, date: Date.today,open_price: quote.open, quote: quote.delayed_price)
+    end
+  end
+
+  def self.prior_friday(date)
+    days_before = (date.wday + 1) % 7 + 1
+    date.to_date - days_before
+  end
+
   #----------- end class methods -----------------------
   #----------- start instance methods ------------------
+
+  # def stock_quote(symbol)
+  #   IEX::Resources::Quote.get(symbol)
+  # end
+
+
+
 
 
 end # end Stock class

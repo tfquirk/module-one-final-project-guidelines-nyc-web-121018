@@ -13,32 +13,43 @@ end
 
 def options(user)
   puts "\n\nWhat would you like to do?"
-  puts "\t 1. Research"
+  puts "\t 1. Review portfolio"
   puts "\t 2. Buy stock"
   puts "\t 3. Sell stock"
-  puts "\t 4. Review portfolio"
+  puts "\t 4. Research" #strech goal
   puts "\t 5. My bank account balance"
+  ### TODO: Create option to switch users?
   puts "\t 6. Signout"
 
   input = gets.chomp
 
   case input
   when "1"
-    #run stock lookup method
+    puts "\n\nThese are the current stocks you own: "
+    user.print_my_stocks
+    sleep(3)
+    options(user)
   when "2"
     #run buy stock logic
   when "3"
-    #run sell stock method
+    puts "\n\n#{user.name.split(" ").first}, you currently own: \n"
+    user.print_my_stocks
+    puts "\nWhich stock would you like to sell? (Stock ID)"
+    answer = gets.chomp.to_i
+    Trade.all.find_by(stock_id: answer, investor_id: user.id).sell_stock
   when "4"
     user.shares_owned
     sleep(5)
     call_options(user)
   when "5"
-    #puts out bank account information
+    puts "Your current balance is:     $#{user.balance}"
+    call_options(user)
   when "6"
     puts "\n\nThank you. Have a great day!"
+
   else
     puts "Invalid input. Please pick a number from this list."
+    sleep(2)
     call_options(user)
   end
 end

@@ -19,10 +19,10 @@ class Investor < ActiveRecord::Base
 
   def print_my_stocks
     my_stocks.each do |stock| #print out stocks to screen
-        puts Stock.all.find(stock.stock_id).company
+        puts "\n#{Stock.all.find(stock.stock_id).company}"
         puts "\tShares: #{stock.num_shares}"
         puts "\tPurchased for: $#{stock.purchase_price}\n"
-        puts "\tStock ID: #{stock.stock_id}"
+        puts "\tStock ID: #{stock.stock_id}\n"
       end
   end
 

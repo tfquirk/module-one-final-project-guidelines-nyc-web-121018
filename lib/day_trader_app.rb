@@ -11,6 +11,10 @@ def call_options(user)
   options(user)
 end
 
+def user_first_name(user)
+  user.name.split(" ").first
+end
+
 def options(user)
   puts "\n\nWhat would you like to do?"
   puts "\t 1. Review portfolio"
@@ -25,24 +29,32 @@ def options(user)
 
   case input
   when "1"
-    puts "\n\nThese are the current stocks you own: "
+    puts "\n\n#{user_first_name(user)}, are the current stocks you own: "
     user.print_my_stocks
     sleep(3)
     options(user)
   when "2"
     #run buy stock logic
   when "3"
-    puts "\n\n#{user.name.split(" ").first}, you currently own: \n"
+    sleep(0.8)
+    puts "."
+    sleep(0.8)
+    puts "."
+    sleep(0.8)
+    puts "."
+    puts "\n\n#{user_first_name(user)}, you currently own: \n"
     user.print_my_stocks
     puts "\nWhich stock would you like to sell? (Stock ID)"
     answer = gets.chomp.to_i
-    Trade.all.find_by(stock_id: answer, investor_id: user.id).sell_stock
+    trade = Trade.all.find_by(stock_id: answer, investor_id: user.id)
+    binding.pry
+    trade.sell_stock(user)
   when "4"
     user.shares_owned
     sleep(5)
     call_options(user)
   when "5"
-    puts "Your current balance is:     $#{user.balance}"
+    puts "\n\n#{user_first_name(user)}, your current balance is:     $#{user.balance}"
     call_options(user)
   when "6"
     puts "\n\nThank you. Have a great day!"

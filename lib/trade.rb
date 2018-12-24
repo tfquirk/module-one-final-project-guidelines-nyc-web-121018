@@ -13,13 +13,18 @@ class Trade < ActiveRecord::Base
   #
   #   if trade.num_shares * Stock.find(trade.stock_id).quote > Account.find_by(investor: trade.investor_id).balance
   #     return false
-  #   elsif trade.status != "pending"
-  #     return false
-  #   elsif Stock.all.find_by(id: trade.stock_id).shares_available < trade.num_shares
-  #     return false
-  #   else
-  #     return true
   #   end
+  #
+  #   if self.status != "pending"
+  #     return false
+  #   end
+  #
+  #   if Stock.all.find_by(id: trade.stock_id).shares_available < trade.num_shares
+  #     return false
+  #   end
+  #
+  #   return true
+  #
   # end
 
   # def buy_stock(symbol)   NEED TO FIX
@@ -49,19 +54,20 @@ class Trade < ActiveRecord::Base
 
   # end
 
-  def sell_stock
+  def sell_stock(user)
     quote = Stock.stock_quote(Stock.all.find(self.stock_id).symbol).delayed_price
+    sell_trade = Trade.create(status: "pending", investor_id: user.id, num_shares: self.num_shares,
+      stock_price: quote, bought_sold: "In progress", stock_id: self.stock_id, date: Date.today)
+    sell_trade.purchase_price = quote * sell_trade.num_shares
+    user.deposit_funds(sell_trade.purchase_price)
+    original_order = Trade.all.find(self.id)
+    original_order.bought_sold = "sold"
+    original_order.save
     binding.pry
-    buy_trade = Trade.all.where(stock_id: self.stock_id, investor_id: user.id)
-    sell_trade = Trade.create(status: "pending", investor_id: user.id, num_shares: buy_trade.num_shares,
-      stock_price: quote, bought_sold: "In progress", stock_id: buy_trade.stock_id)
-    #trade.valid?
-    sell_trade.purchase_price = stock.delayed_price * buy_trade.num_shares
-    sell_trade.date = Date.today
-    self.debit_funds(trade.purchase_price)
-    sell_trade.bought_sold = "sold"
+    sell_trade.bought_sold = "sell order"
     sell_trade.status = "completed"
     sell_trade.save
+    puts "\nCongratulations! You have successfully sold #{self.num_shares} of #{Stock.stock_quote(Stock.all.find(self.stock_id).company}"
   end
 
 end # end Trade class

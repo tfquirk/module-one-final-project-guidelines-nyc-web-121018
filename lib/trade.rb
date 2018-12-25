@@ -9,12 +9,15 @@ class Trade < ActiveRecord::Base
   #----------- start instance methods ------------------
 
   def funds_available?
-    #check funds available
+    #check if users has appropriate funds available to purchase num_shares of stock
     if self.num_shares * Stock.find(self.stock_id).quote > Account.find_by(investor_id: self.investor_id).balance
+      self.status = "canceled"
+      self.bought_sold = "Funds to execute trade were unavailable."
+      puts "Your account does not have the funds available to execute this trade."
       return false
     else
       true
-    end 
+    end
 
   end
   # def valid?(trade)
@@ -34,11 +37,13 @@ class Trade < ActiveRecord::Base
   # end
 
   def self.buy_stock(user, quote, buy_trade)
-    buy_trade.purchase_price = quote.delayed_price * buy_trade.num_shares
-    user.debit_funds(buy_trade.purchase_price)
-    buy_trade.bought_sold = "bought"
-    buy_trade.status = "completed"
-    buy_trade.save
+    if buy_trade.funds_available?
+      buy_trade.purchase_price = quote.delayed_price * buy_trade.num_shares
+      user.debit_funds(buy_trade.purchase_price)
+      buy_trade.bought_sold = "bought"
+      buy_trade.status = "completed"
+      buy_trade.save
+    end
   end
 
   def sell_stock(user)

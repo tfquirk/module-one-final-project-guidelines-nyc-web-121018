@@ -31,7 +31,7 @@ class Investor < ActiveRecord::Base
         puts "\n#{Stock.all.find(stock.stock_id).company}"
         puts "\tShares: #{stock.num_shares}"
         puts "\tPurchased for: $#{stock.purchase_price.round(2)}"
-        current_quote = IEX::Resources::Quote.get(Stock.find(stock.stock_id).symbol).delayed_price
+        current_quote = IEX::Resources::Quote.get(Stock.find(stock.stock_id).symbol).delayed_price.round(2)
         puts "\tCurrent quote: $#{current_quote.round(2)} per share"
         puts "\tCurrent value: $#{current_quote * stock.num_shares.round(2)}"
         if stock.purchase_price > current_quote * stock.num_shares

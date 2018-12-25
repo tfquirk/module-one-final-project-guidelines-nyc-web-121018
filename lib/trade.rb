@@ -8,12 +8,18 @@ class Trade < ActiveRecord::Base
   #----------- end class methods -----------------------
   #----------- start instance methods ------------------
 
+  def funds_available?
+    #check funds available
+    if self.num_shares * Stock.find(self.stock_id).quote > Account.find_by(investor_id: self.investor_id).balance
+      return false
+    else
+      true
+    end 
+
+  end
   # def valid?(trade)
-  #   #check funds available # check shares available # check trade not completed
   #
-  #   if trade.num_shares * Stock.find(trade.stock_id).quote > Account.find_by(investor: trade.investor_id).balance
-  #     return false
-  #   end
+  ## check shares available # check trade not completed
   #
   #   if self.status != "pending"
   #     return false

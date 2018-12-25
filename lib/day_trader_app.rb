@@ -17,7 +17,7 @@ end
 
 def options(user)
   puts "\n\nWhat would you like to do?"
-  puts "\t 1. Review portfolio"
+  puts "\t 1. Review portfolio/analysis"
   puts "\t 2. Buy stock"
   puts "\t 3. Sell stock"
   puts "\t 4. Research" #strech goal
@@ -29,8 +29,8 @@ def options(user)
 
   case input
   when "1"
-    puts "\n\n#{user_first_name(user)}, are the current stocks you own: "
-    user.print_my_stocks
+    puts "\n\n#{user_first_name(user)}, here are the current stocks you own: "
+    user.my_stocks_analysis
     sleep(3)
     options(user)
   when "2"
@@ -42,7 +42,6 @@ def options(user)
     puts "\nHow many shares would you like to purchase? (number)"
     number = gets.chomp
     stock = Stock.find_or_create_stock_from_quote(quote)
-    binding.pry
     new_trade = Trade.create(status: "pending", investor_id: user.id, num_shares: number,
       stock_price: quote.delayed_price, bought_sold: "In progress", stock_id: stock.id, date: Date.today)
     Trade.buy_stock(user, quote, new_trade)
@@ -64,8 +63,14 @@ def options(user)
     puts "\nCongratulations! You have successfully sold #{trade.num_shares} shares of #{Stock.stock_quote(Stock.all.find(trade.stock_id).company)}"
     call_options(user)
   when "4"
-    user.shares_owned
-    sleep(5)
+    puts "\nWhich stock would you like to research? (stock symbol)"
+    answer = gets.chomp
+    quote = Stock.stock_quote(answer)
+    puts "\nCurrent stock information for #{quote.company_name}:"
+    puts "\tCurrent trading price: $#{quote.delayed_price}"
+    puts "\tGiven your current bank account balance of: $#{user.balance}"
+    puts "\t\tyou can afford to buy #{(user.balance / quote.delayed_price).round(2)} shares of this stock." if user.balance > 0
+    sleep(4)
     call_options(user)
   when "5"
     puts "\n\n#{user_first_name(user)}, your current balance is:     $#{user.balance}"

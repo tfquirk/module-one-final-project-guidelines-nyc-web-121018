@@ -49,4 +49,13 @@ class Trade < ActiveRecord::Base
     sell_trade.save
   end
 
+  def weekend?(date)
+    if Date.today == Date.today.saturday? || Date.today == Date.today.sunday?
+      puts "Sorry no trades can be made over the weekend"
+      options(self)
+    else
+      return false
+    end
+  end
+
 end # end Trade class

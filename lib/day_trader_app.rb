@@ -1,24 +1,10 @@
 
-# --------------------- user helper methods -----------------------
+# --------------------- Determine user & create new user if they do not exist
 
-  def user_imput
-    gets.chomp
-  end
-
-  def call_options(user)
-    options(user)
-  end
-
-  def user_first_name(user)
-    user.name.split(" ").first
-  end
-
-# --------------------- end user helper methods -------------------
-# --------------------- Determine user & create new user if they do not exist --------------
-
-  def login(username)
+  def login(username) #username is a full name (first and last) string
+    first_name = username.split(" ").first
     if !Investor.all.find_by(name: username)
-      puts "\n\nYou do not currently have an account, #{user_first_name(username)}. Please fill in your information to create one:"
+      puts "\n\nYou do not currently have an account, #{first_name}. Please fill in your information to create one:"
       user = create_new_user(username)
       create_new_bank_account(user)
       options(user)
@@ -31,33 +17,33 @@
   def create_new_user(username)
     new_user = Investor.new
     new_user.name = username
-
-    puts "\nWhat is your age, #{user_first_name(username)}?"
+    first_name = username.split(" ").first
+    puts "\nWhat is your age, #{first_name}?"
     response1 = gets.chomp
     new_user.age = response1
 
-    puts "\nWhat is your address, #{user_first_name(username)}?"
+    puts "\nWhat is your address, #{first_name}?"
     response2 = gets.chomp
     new_user.address = response2
 
-    puts "\nWhat city do you live in, #{user_first_name(username)}?"
+    puts "\nWhat city do you live in, #{first_name}?"
     response3 = gets.chomp
     new_user.city = response3
 
-    puts "\nWhat state do you live in, #{user_first_name(username)}? ex. GA, or CA"
+    puts "\nWhat state do you live in, #{first_name}? ex. GA, or CA"
     response4 = gets.chomp
     new_user.state = response4
 
-    puts "\nWhat is your email address, #{user_first_name(username)}?"
+    puts "\nWhat is your email address, #{first_name}?"
     response5 = gets.chomp
     new_user.email = response5
 
-    puts "\nWhat is your phone number, #{user_first_name(username)}?"
+    puts "\nWhat is your phone number, #{first_name}?"
     response6 = gets.chomp
     new_user.phone_num = response6
     new_user.save
 
-    puts "\n\nThanks, #{user_first_name(username)}. Your account has been created. \n\n"
+    puts "\n\nThanks, #{first_name}. Your account has been created. \n\n"
 
     Investor.find_by(name: username)
   end
@@ -82,7 +68,23 @@
   end
 
 # --------------------- end determine user ------------------------
+# --------------------- user helper methods -----------------------
+
+  def user_imput
+    gets.chomp
+  end
+
+  def call_options(user)
+    options(user)
+  end
+
+  def user_first_name(user)
+    user.name.split(" ").first
+  end
+
+# --------------------- end user helper methods -------------------
 # --------------------- start DayTrader fuctionality --------------
+
 
   def welcome
     puts "Hello, welcome to DayTrader. Please sign in with your name (first + last): "
@@ -149,7 +151,7 @@
       puts "\n\n#{user_first_name(user)}, your current balance is:     $#{user.balance}"
       call_options(user)
     when "6"
-      puts "\n\nThank you. Have a great day!"
+      puts "\n\nThank you. Have a great day!\n\n"
 
     else
       puts "Invalid input. Please pick a number from this list."

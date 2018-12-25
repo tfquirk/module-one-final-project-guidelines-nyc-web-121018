@@ -35,6 +35,19 @@ def options(user)
     options(user)
   when "2"
     #run buy stock logic
+    puts "\nWhich stock would you like to purchase? (stock symbol)"
+    answer = gets.chomp
+    quote = Stock.stock_quote(answer)
+    #tell how much your balance is and cost to tell how much you can afford?
+    puts "\nHow many shares would you like to purchase? (number)"
+    number = gets.chomp
+    stock = Stock.find_or_create_stock_from_quote(quote)
+    binding.pry
+    new_trade = Trade.create(status: "pending", investor_id: user.id, num_shares: number,
+      stock_price: quote.delayed_price, bought_sold: "In progress", stock_id: stock.id, date: Date.today)
+    Trade.buy_stock(user, quote, new_trade)
+    puts "\nCongratulations! You have successfully bought #{new_trade.num_shares} shares of #{Stock.stock_quote(Stock.all.find(new_trade.stock_id).company)}"
+    call_options(user)
   when "3"
     sleep(0.8)
     puts "."
@@ -47,8 +60,9 @@ def options(user)
     puts "\nWhich stock would you like to sell? (Stock ID)"
     answer = gets.chomp.to_i
     trade = Trade.all.find_by(stock_id: answer, investor_id: user.id)
-    binding.pry
     trade.sell_stock(user)
+    puts "\nCongratulations! You have successfully sold #{trade.num_shares} shares of #{Stock.stock_quote(Stock.all.find(trade.stock_id).company)}"
+    call_options(user)
   when "4"
     user.shares_owned
     sleep(5)

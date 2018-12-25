@@ -46,14 +46,14 @@ class Investor < ActiveRecord::Base
     account = Account.find_by(investor_id: self.id)
     account.balance += amount
     account.save
-    puts "Your account balance is now: $#{account.balance}"
+    puts "\n\nYour account balance is now: $#{account.balance}"
   end
 
   def debit_funds(amount)
     account = Account.find_by(investor_id: self.id)
     account.balance -= amount
     account.save
-    puts "Your account balance is now: $#{account.balance}"
+    puts "\n\nYour account balance is now: $#{account.balance}"
   end
 
   # print_my_stocks does this currently

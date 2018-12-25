@@ -7,16 +7,19 @@ class Investor < ActiveRecord::Base
   #----------- end class methods -----------------------
   #----------- start instance methods ------------------
 
+  #look up user account balance
   def balance
     account = Account.find_by(investor_id: self.id)
     account.balance.round(2)
   end
 
+  #selects all of user's stocks (those not already sold)
   def my_stocks
     trades = Trade.all.select {|trade| trade.investor_id == self.id} #select my trades
     not_sold = trades.select {|trade| trade.bought_sold == "bought"} #select stocks I've bought, but not yet sold
   end
 
+  #prints user stocks and additional info
   def print_my_stocks
     my_stocks.each do |stock| #print out stocks to screen
         puts "\n#{Stock.all.find(stock.stock_id).company}"
@@ -26,6 +29,7 @@ class Investor < ActiveRecord::Base
       end
   end
 
+  #looks at purchase price and current quote to evaluate stock performance
   def my_stocks_analysis
     my_stocks.each do |stock| #print out stocks to screen
         puts "\n#{Stock.all.find(stock.stock_id).company}"
@@ -42,6 +46,7 @@ class Investor < ActiveRecord::Base
     end
   end
 
+  # deposts proceeds of a stock sale to user bank account
   def deposit_funds(amount)
     account = Account.find_by(investor_id: self.id)
     account.balance += amount
@@ -49,6 +54,7 @@ class Investor < ActiveRecord::Base
     puts "\n\nYour account balance is now: $#{account.balance}"
   end
 
+  # withdrawls funds from user bank account 
   def debit_funds(amount)
     account = Account.find_by(investor_id: self.id)
     account.balance -= amount

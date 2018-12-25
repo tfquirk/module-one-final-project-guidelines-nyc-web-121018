@@ -3,20 +3,24 @@ class Stock < ActiveRecord::Base
   has_many :trade
   has_many :investor, through: :trade
 
-  def self.total_available_shares #returns total number of shares_available
+  #returns total number of shares_available for all stocks
+  def self.total_available_shares
     shares = self.all.map { |stock| stock.shares_available }
     puts shares.inject {|sum, a| sum + a }
   end
 
-  def self.list_of_investors #lists all individuals who currently own stock
+  #lists all individuals who currently own stock
+  def self.list_of_investors
     investors = Trade.all.map { |trade| trade.investor_id if trade.bought_sold == "bought"}
     investors.each { |el| puts Investor.all.find(el).name  }
   end
 
+  # calls the IEX gem and gets a hash quote of data for any stock symbol
   def self.stock_quote(symbol)
     IEX::Resources::Quote.get(symbol)
   end
 
+  #finds record from or creates new record for the stock database
   def self.find_or_create_stock_from_quote(quote)
     find_stock = Stock.all.select {|stock| stock.symbol == quote.symbol }
     if find_stock.length > 0
@@ -35,6 +39,7 @@ class Stock < ActiveRecord::Base
     end
   end
 
+  #finds the date of the previous Friday
   def self.prior_friday(date)
     days_before = (date.wday + 1) % 7 + 1
     date.to_date - days_before
@@ -43,12 +48,11 @@ class Stock < ActiveRecord::Base
   #----------- end class methods -----------------------
   #----------- start instance methods ------------------
 
-  # def stock_quote(symbol)
-  #   IEX::Resources::Quote.get(symbol)
-  # end
-
-
-
-
-
+  #displays current quote information/analysis for user 
+  def research_quote(quote)
+    puts "\nCurrent stock information for #{quote.company_name}:"
+    puts "\tCurrent trading price: $#{quote.delayed_price}"
+    puts "\tGiven your current bank account balance of: $#{user.balance}"
+    puts "\tyou can afford to buy #{(user.balance / quote.delayed_price).round(2)} shares of this stock." if user.balance > 0
+  end
 end # end Stock class

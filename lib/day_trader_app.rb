@@ -141,10 +141,7 @@
       puts "\nWhich stock would you like to research? (stock symbol)"
       answer = gets.chomp
       quote = Stock.stock_quote(answer)
-      puts "\nCurrent stock information for #{quote.company_name}:"
-      puts "\tCurrent trading price: $#{quote.delayed_price}"
-      puts "\tGiven your current bank account balance of: $#{user.balance}"
-      puts "\t\tyou can afford to buy #{(user.balance / quote.delayed_price).round(2)} shares of this stock." if user.balance > 0
+      research_quote(quote)
       sleep(4)
       call_options(user)
     when "5"

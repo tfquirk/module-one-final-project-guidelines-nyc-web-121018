@@ -123,7 +123,6 @@
       new_trade = Trade.create(status: "pending", investor_id: user.id, num_shares: number,
         stock_price: quote.delayed_price, bought_sold: "In progress", stock_id: stock.id, date: Date.today)
       Trade.buy_stock(user, quote, new_trade)
-      puts "\nCongratulations! You have successfully bought #{new_trade.num_shares} shares of #{Stock.stock_quote(Stock.all.find(new_trade.stock_id).company)}"
       options(user)
     when "4"
       sleep(0.8)
@@ -138,7 +137,6 @@
       answer = gets.chomp.to_i
       trade = Trade.all.find_by(stock_id: answer, investor_id: user.id)
       trade.sell_stock(user)
-      puts "\nCongratulations! You have successfully sold #{trade.num_shares} shares of #{Stock.stock_quote(Stock.all.find(trade.stock_id).company)}"
       call_options(user)
     when "5"
       puts "\nWhich stock would you like to research? (stock symbol)"

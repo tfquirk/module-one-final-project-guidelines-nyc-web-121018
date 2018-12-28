@@ -12,6 +12,8 @@ class Trade < ActiveRecord::Base
       buy_trade.bought_sold = "bought"
       buy_trade.status = "completed"
       buy_trade.save
+      puts "\nCongratulations! You have successfully bought #{buy_trade.num_shares} shares of #{quote.company_name}"
+
     end
   end
 
@@ -50,10 +52,10 @@ class Trade < ActiveRecord::Base
 
   # gets a new stock price quote, and process the trade
   def sell_stock(user)
-    quote = Stock.stock_quote(Stock.all.find(self.stock_id).symbol).delayed_price
+    quote = Stock.stock_quote(Stock.all.find(self.stock_id).symbol)
     sell_trade = Trade.create(status: "pending", investor_id: user.id, num_shares: self.num_shares,
-      stock_price: quote, bought_sold: "In progress", stock_id: self.stock_id, date: Date.today)
-    sell_trade.purchase_price = quote * sell_trade.num_shares
+      stock_price: quote.delayed_price, bought_sold: "In progress", stock_id: self.stock_id, date: Date.today)
+    sell_trade.purchase_price = quote.delayed_price * sell_trade.num_shares
     user.deposit_funds(sell_trade.purchase_price)
     original_order = Trade.all.find(self.id)
     original_order.bought_sold = "sold"
@@ -61,6 +63,7 @@ class Trade < ActiveRecord::Base
     sell_trade.bought_sold = "sell order"
     sell_trade.status = "completed"
     sell_trade.save
+    puts "\nCongratulations! You have successfully sold #{sell_trade.num_shares} shares of #{quote.company_name}"
   end
 
   #this method is not used, but was create with the option to expand functionality in the future

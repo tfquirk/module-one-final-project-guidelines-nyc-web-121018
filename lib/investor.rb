@@ -15,8 +15,8 @@ class Investor < ActiveRecord::Base
 
   #selects all of user's stocks (those not already sold)
   def my_stocks
-    trades = Trade.all.select {|trade| trade.investor_id == self.id} #select my trades
-    not_sold = trades.select {|trade| trade.bought_sold == "bought"} #select stocks I've bought, but not yet sold
+    trades = Trade.all.select {|trade| trade.investor_id == self.id} 
+    not_sold = trades.select {|trade| trade.bought_sold == "bought"}
   end
 
   #prints user stocks and additional info
@@ -54,7 +54,7 @@ class Investor < ActiveRecord::Base
     puts "\n\nYour account balance is now: $#{account.balance}"
   end
 
-  # withdrawls funds from user bank account 
+  # withdrawls funds from user bank account
   def debit_funds(amount)
     account = Account.find_by(investor_id: self.id)
     account.balance -= amount

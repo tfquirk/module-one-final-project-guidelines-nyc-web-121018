@@ -48,8 +48,8 @@ class Stock < ActiveRecord::Base
   #----------- end class methods -----------------------
   #----------- start instance methods ------------------
 
-  #displays current quote information/analysis for user 
-  def research_quote(quote)
+  #displays current quote information/analysis for user
+  def self.research_quote(quote, user)
     puts "\nCurrent stock information for #{quote.company_name}:"
     puts "\tCurrent trading price: $#{quote.delayed_price}"
     puts "\tGiven your current bank account balance of: $#{user.balance}"

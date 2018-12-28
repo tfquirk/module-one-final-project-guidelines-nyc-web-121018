@@ -92,11 +92,11 @@
 
   def options(user)
     puts "\n\nWhat would you like to do, #{user_first_name(user)}?"
-    puts "\t 1. Review portfolio/analysis"
-    puts "\t 2. Buy stock"
-    puts "\t 3. Sell stock"
-    puts "\t 4. Research"
-    puts "\t 5. My bank account balance"
+    puts "\t 1. My bank account balance"
+    puts "\t 2. Review portfolio/analysis"
+    puts "\t 3. Buy stock"
+    puts "\t 4. Sell stock"
+    puts "\t 5. Research"
     ### TODO: Create option to switch users?
     puts "\t 6. Signout"
 
@@ -104,11 +104,14 @@
 
     case input
     when "1"
+      puts "\n\n#{user_first_name(user)}, your current balance is:     $#{user.balance}"
+      call_options(user)
+    when "2"
       puts "\n\n#{user_first_name(user)}, here are the current stocks you own: "
       user.my_stocks_analysis
       sleep(3)
       options(user)
-    when "2"
+    when "3"
       #run buy stock logic
       puts "\nWhich stock would you like to purchase? (stock symbol)"
       answer = gets.chomp
@@ -121,8 +124,8 @@
         stock_price: quote.delayed_price, bought_sold: "In progress", stock_id: stock.id, date: Date.today)
       Trade.buy_stock(user, quote, new_trade)
       puts "\nCongratulations! You have successfully bought #{new_trade.num_shares} shares of #{Stock.stock_quote(Stock.all.find(new_trade.stock_id).company)}"
-      call_options(user)
-    when "3"
+      options(user)
+    when "4"
       sleep(0.8)
       puts "."
       sleep(0.8)
@@ -137,15 +140,12 @@
       trade.sell_stock(user)
       puts "\nCongratulations! You have successfully sold #{trade.num_shares} shares of #{Stock.stock_quote(Stock.all.find(trade.stock_id).company)}"
       call_options(user)
-    when "4"
+    when "5"
       puts "\nWhich stock would you like to research? (stock symbol)"
       answer = gets.chomp
       quote = Stock.stock_quote(answer)
-      research_quote(quote)
+      Stock.research_quote(quote, user)
       sleep(4)
-      call_options(user)
-    when "5"
-      puts "\n\n#{user_first_name(user)}, your current balance is:     $#{user.balance}"
       call_options(user)
     when "6"
       puts "\n\nThank you. Have a great day!\n\n"

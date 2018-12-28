@@ -91,6 +91,7 @@
   end
 
   def options(user)
+    puts "***********************************************************\n"
     puts "\n\nWhat would you like to do, #{user_first_name(user)}?"
     puts "\t 1. My bank account balance"
     puts "\t 2. Review portfolio/analysis"

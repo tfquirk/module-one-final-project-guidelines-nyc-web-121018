@@ -38,7 +38,7 @@ class Investor < ActiveRecord::Base
           puts "\tPurchased for: $#{stock.purchase_price.round(2)}"
           current_quote = IEX::Resources::Quote.get(Stock.find(stock.stock_id).symbol).delayed_price.round(2)
           puts "\tCurrent quote: $#{current_quote.round(2)} per share"
-          puts "\tCurrent value: $#{current_quote * stock.num_shares.round(2)}"
+          puts "\tCurrent value: $#{(current_quote * stock.num_shares).round(2)}"
           if stock.purchase_price > current_quote * stock.num_shares
             puts "\tPercent change: -#{((stock.purchase_price - (current_quote * stock.num_shares)) / stock.purchase_price * 100).round(2)}%"
           else
@@ -47,7 +47,7 @@ class Investor < ActiveRecord::Base
       end
     else
       puts "\n\n You do not currently own any stocks."
-    end 
+    end
   end
 
   # deposts proceeds of a stock sale to user bank account
@@ -55,7 +55,7 @@ class Investor < ActiveRecord::Base
     account = Account.find_by(investor_id: self.id)
     account.balance += amount
     account.save
-    puts "\n\nYour account balance is now: $#{account.balance}"
+    puts "\n\nYour account balance is now: $#{account.balance.round(2)}"
   end
 
   # withdrawls funds from user bank account
@@ -63,7 +63,7 @@ class Investor < ActiveRecord::Base
     account = Account.find_by(investor_id: self.id)
     account.balance -= amount
     account.save
-    puts "\n\nYour account balance is now: $#{account.balance}"
+    puts "\n\nYour account balance is now: $#{account.balance.round(2)}"
   end
 
 end # end Investor class

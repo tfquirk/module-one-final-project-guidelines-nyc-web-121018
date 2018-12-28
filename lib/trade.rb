@@ -12,7 +12,8 @@ class Trade < ActiveRecord::Base
       buy_trade.bought_sold = "bought"
       buy_trade.status = "completed"
       buy_trade.save
-      puts "\nCongratulations! You have successfully bought #{buy_trade.num_shares} shares of #{quote.company_name}"
+      puts "\nCongratulations! You have successfully bought #{buy_trade.num_shares}"
+      puts " shares of #{quote.company_name}"
 
     end
   end

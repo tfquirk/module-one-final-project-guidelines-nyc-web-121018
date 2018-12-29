@@ -67,6 +67,22 @@ class Trade < ActiveRecord::Base
     puts "\nCongratulations! You have successfully sold #{sell_trade.num_shares} shares of #{quote.company_name}"
   end
 
+  def sell_partial_stock(user, shares_to_sell)
+    quote = Stock.stock_quote(Stock.all.find(self.stock_id).symbol)
+    sell_trade = Trade.create(status: "pending", investor_id: user.id, num_shares: shares_to_sell,
+      stock_price: quote.delayed_price, bought_sold: "In progress", stock_id: self.stock_id, date: Date.today)
+    sell_trade.purchase_price = quote.delayed_price * sell_trade.num_shares
+    user.deposit_funds(sell_trade.purchase_price)
+    original_order = Trade.all.find(self.id)
+    original_order.purchase_price = original_order.stock_price * (original_order.num_shares - shares_to_sell)
+    original_order.num_shares -= shares_to_sell
+    original_order.save
+    sell_trade.bought_sold = "partial sell order from trade ID: #{self.id}"
+    sell_trade.status = "completed"
+    sell_trade.save
+    puts "\nCongratulations! You have successfully sold #{sell_trade.num_shares} shares of #{quote.company_name}"
+  end
+
   #this method is not used, but was create with the option to expand functionality in the future
   # def weekend?(date)
   #   if Date.today == Date.today.saturday? || Date.today == Date.today.sunday?

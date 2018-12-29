@@ -106,7 +106,6 @@
     case input
     when "1"
       puts "\n\n#{user_first_name(user)}, your current balance is:     $#{user.balance}"
-    binding.pry
       call_options(user)
     when "2"
       puts "\n\n#{user_first_name(user)}, here are the current stocks you own: "
@@ -138,7 +137,13 @@
       puts "\nWhich stock would you like to sell? (Stock ID)"
       answer = gets.chomp.to_i
       trade = Trade.all.find_by(stock_id: answer, investor_id: user.id)
-      trade.sell_stock(user)
+      puts "\nHow many shares would you like to sell? (Number)"
+      number = gets.chomp.to_i
+      if number < trade.num_shares
+        trade.sell_partial_stock(user, number)
+      else
+        trade.sell_stock(user)
+      end
       call_options(user)
     when "5"
       puts "\nWhich stock would you like to research? (stock symbol)"

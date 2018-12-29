@@ -106,6 +106,7 @@
     case input
     when "1"
       puts "\n\n#{user_first_name(user)}, your current balance is:     $#{user.balance}"
+    binding.pry
       call_options(user)
     when "2"
       puts "\n\n#{user_first_name(user)}, here are the current stocks you own: "

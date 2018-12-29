@@ -8,4 +8,4 @@ user = Investor.find_by(name: username)
 login(username)
 
 
-# binding.pry
+binding.pry

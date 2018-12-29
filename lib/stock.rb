@@ -23,19 +23,21 @@ class Stock < ActiveRecord::Base
   #finds record from or creates new record for the stock database
   def self.find_or_create_stock_from_quote(quote)
     find_stock = Stock.all.select {|stock| stock.symbol == quote.symbol }
-    if find_stock.length > 0
-      if find_stock.last.date == Date.today || find_stock.last.date == prior_friday(Date.today)
-        found_stock = find_stock.last
+    if find_stock.length > 0                                                #checks to see if record exits in database
+      if find_stock.last.date == Date.today.to_s                            #if last record is from today, we just update
+        found_stock = find_stock.last                                       #otherwise, create a new record for today
         found_stock.quote = quote.delayed_price
         found_stock.save
         return found_stock
       else
-        Stock.create(company: quote.company_name, symbol: quote.symbol, shares_available: rand(1500),
-            sector: quote.sector, date: Date.today,open_price: quote.open, close_price: quote.close, quote: quote.delayed_price)
+        Stock.create(company: quote.company_name, symbol: quote.symbol,                 #create because date != today
+          shares_available: rand(1500), sector: quote.sector, date: Date.today,
+          open_price: quote.open, close_price: quote.close, quote: quote.delayed_price)
       end
     else
-      Stock.create(company: quote.company_name, symbol: quote.symbol, shares_available: rand(1500),
-          sector: quote.sector, date: Date.today,open_price: quote.open, close_price: quote.close, quote: quote.delayed_price)
+      Stock.create(company: quote.company_name, symbol: quote.symbol,                   #create because no record of
+        shares_available: rand(1500), sector: quote.sector, date: Date.today,           #stock in database 
+        open_price: quote.open, close_price: quote.close, quote: quote.delayed_price)
     end
   end
 

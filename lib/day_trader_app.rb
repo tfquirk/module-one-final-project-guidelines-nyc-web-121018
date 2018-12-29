@@ -95,9 +95,9 @@
     puts "\n\nWhat would you like to do, #{user_first_name(user)}?"
     puts "\t 1. My bank account balance"
     puts "\t 2. Review portfolio/analysis"
-    puts "\t 3. Buy stock"
-    puts "\t 4. Sell stock"
-    puts "\t 5. Research"
+    puts "\t 3. Research"
+    puts "\t 4. Buy stock"
+    puts "\t 5. Sell stock"
     ### TODO: Create option to switch users?
     puts "\t 6. Signout"
 
@@ -113,6 +113,13 @@
       sleep(3)
       options(user)
     when "3"
+      puts "\nWhich stock would you like to research? (stock symbol)"
+      answer = gets.chomp
+      quote = Stock.stock_quote(answer)
+      Stock.research_quote(quote, user)
+      sleep(4)
+      call_options(user)
+    when "4"
       #run buy stock logic
       puts "\nWhich stock would you like to purchase? (stock symbol)"
       answer = gets.chomp
@@ -124,8 +131,8 @@
       new_trade = Trade.create(status: "pending", investor_id: user.id, num_shares: number,
         stock_price: quote.delayed_price, bought_sold: "In progress", stock_id: stock.id, date: Date.today)
       Trade.buy_stock(user, quote, new_trade)
-      options(user)
-    when "4"
+      call_options(user)
+    when "5"
       sleep(0.8)
       puts "."
       sleep(0.8)
@@ -144,13 +151,6 @@
       else
         trade.sell_stock(user)
       end
-      call_options(user)
-    when "5"
-      puts "\nWhich stock would you like to research? (stock symbol)"
-      answer = gets.chomp
-      quote = Stock.stock_quote(answer)
-      Stock.research_quote(quote, user)
-      sleep(4)
       call_options(user)
     when "6"
       puts "\n\nThank you. Have a great day!\n\n"

@@ -18,6 +18,14 @@ class Trade < ActiveRecord::Base
     end
   end
 
+  def self.sell_all_stocks(user)
+    user.my_stocks.each do |trade|
+      trade.sell_stock(user)
+    end
+
+    puts "All of your stocks have been sold."
+  end
+
   #----------- end class methods -----------------------
   #----------- start instance methods ------------------
 

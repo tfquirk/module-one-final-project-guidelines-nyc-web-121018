@@ -36,7 +36,7 @@ class Stock < ActiveRecord::Base
       end
     else
       Stock.create(company: quote.company_name, symbol: quote.symbol,                   #create because no record of
-        shares_available: rand(1500), sector: quote.sector, date: Date.today,           #stock in database 
+        shares_available: rand(1500), sector: quote.sector, date: Date.today,           #stock in database
         open_price: quote.open, close_price: quote.close, quote: quote.delayed_price)
     end
   end
@@ -54,7 +54,7 @@ class Stock < ActiveRecord::Base
   def self.research_quote(quote, user)
     puts "\nCurrent stock information for #{quote.company_name}:"
     puts "\tCurrent trading price: $#{quote.delayed_price}"
-    puts "\tGiven your current bank account balance of: $#{user.balance}"
-    puts "\tyou can afford to buy #{(user.balance / quote.delayed_price).round(2)} shares of this stock." if user.balance > 0
+    puts "\tGiven your current bank account balance of: $#{user.balance}" if Account.find_by(investor_id: user.id)
+    puts "\tyou can afford to buy #{(user.balance / quote.delayed_price).round(2)} shares of this stock." if Account.find_by(investor_id: user.id) && user.balance > 0
   end
 end # end Stock class

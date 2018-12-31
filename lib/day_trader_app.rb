@@ -98,15 +98,34 @@
     puts "\t 3. Research"
     puts "\t 4. Buy stock"
     puts "\t 5. Sell stock"
-    ### TODO: Create option to switch users?
-    puts "\t 6. Signout"
+    puts "\t 6. User settings"
+    puts "\t 7. Signout"
 
     input = gets.chomp
 
     case input
     when "1"
-      puts "\n\n#{user_first_name(user)}, your current balance is:     $#{user.balance}"
-      call_options(user)
+      if !Account.find_by(investor_id: user.id)
+        puts "***********************************************************"
+        puts "\n\nYour bank account must be linked to retrieve your balance."
+        puts "Would you like to link your bank account? (Y/N)"
+        answer = user_imput.downcase
+
+        case answer
+        when 'y'
+          create_new_bank_account(user)
+        when 'n'
+          puts "You are not able to purchase stock at this time. "
+          call_options(user)
+        else
+          puts "Invalid input. Returning you to the main menu."
+          sleep(2)
+          call_options(user)
+        end
+      else
+        puts "\n\n#{user_first_name(user)}, your current balance is:     $#{user.balance}"
+        call_options(user)
+      end
     when "2"
       puts "\n\n#{user_first_name(user)}, here are the current stocks you own: "
       user.my_stocks_analysis
@@ -120,39 +139,76 @@
       sleep(4)
       call_options(user)
     when "4"
-      #run buy stock logic
-      puts "\nWhich stock would you like to purchase? (stock symbol)"
-      answer = gets.chomp
-      quote = Stock.stock_quote(answer)
-      #tell how much your balance is and cost to tell how much you can afford?
-      puts "\nHow many shares would you like to purchase? (number)"
-      number = gets.chomp
-      stock = Stock.find_or_create_stock_from_quote(quote)
-      new_trade = Trade.create(status: "pending", investor_id: user.id, num_shares: number,
-        stock_price: quote.delayed_price, bought_sold: "In progress", stock_id: stock.id, date: Date.today)
-      Trade.buy_stock(user, quote, new_trade)
-      call_options(user)
-    when "5"
-      sleep(0.8)
-      puts "."
-      sleep(0.8)
-      puts "."
-      sleep(0.8)
-      puts "."
-      puts "\n\n#{user_first_name(user)}, you currently own: \n"
-      user.print_my_stocks
-      puts "\nWhich stock would you like to sell? (Stock ID)"
-      answer = gets.chomp.to_i
-      trade = Trade.all.find_by(stock_id: answer, investor_id: user.id)
-      puts "\nHow many shares would you like to sell? (Number)"
-      number = gets.chomp.to_i
-      if number < trade.num_shares
-        trade.sell_partial_stock(user, number)
+      if !Account.find_by(investor_id: user.id)
+        puts "You must link a bank account to buy stocks."
+        puts "Would you like to link your bank account? (Y/N)"
+        answer = user_imput.downcase
+
+        case answer
+        when 'y'
+          create_new_bank_account(user)
+        when 'n'
+          puts "You are not able to purchase stock at this time. "
+          call_options(user)
+        else
+          puts "Invalid input. Please pick Y or N."
+          sleep(2)
+          call_options(user)
+        end
       else
-        trade.sell_stock(user)
+        puts "\nWhich stock would you like to purchase? (stock symbol)"
+        answer = gets.chomp
+        quote = Stock.stock_quote(answer)
+        #tell how much your balance is and cost to tell how much you can afford?
+        puts "\nHow many shares would you like to purchase? (number)"
+        number = gets.chomp
+        stock = Stock.find_or_create_stock_from_quote(quote)
+        new_trade = Trade.create(status: "pending", investor_id: user.id, num_shares: number,
+          stock_price: quote.delayed_price, bought_sold: "In progress", stock_id: stock.id, date: Date.today)
+        Trade.buy_stock(user, quote, new_trade)
+        call_options(user)
       end
-      call_options(user)
+    when "5"
+      if !Account.find_by(investor_id: user.id)
+        puts "You must link a bank account to sell stocks."
+        puts "Would you like to link your bank account? (Y/N)"
+        answer = user_imput.downcase
+
+        case answer
+        when 'y'
+          create_new_bank_account(user)
+        when 'n'
+          puts "You are not able to purchase stock at this time. "
+          call_options(user)
+        else
+          puts "Invalid input. Please pick Y or N."
+          sleep(2)
+          call_options(user)
+        end
+      else
+        sleep(0.8)
+        puts "."
+        sleep(0.8)
+        puts "."
+        sleep(0.8)
+        puts "."
+        puts "\n\n#{user_first_name(user)}, you currently own: \n"
+        user.print_my_stocks
+        puts "\nWhich stock would you like to sell? (Stock ID)"
+        answer = gets.chomp.to_i
+        trade = Trade.all.find_by(stock_id: answer, investor_id: user.id)
+        puts "\nHow many shares would you like to sell? (Number)"
+        number = gets.chomp.to_i
+        if number < trade.num_shares
+          trade.sell_partial_stock(user, number)
+        else
+          trade.sell_stock(user)
+        end
+        call_options(user)
+      end
     when "6"
+      menu_settings(user)
+    when "7"
       puts "\n\nThank you. Have a great day!\n\n"
 
     else
@@ -160,6 +216,118 @@
       sleep(2)
       call_options(user)
     end
+  end
+
+  def menu_settings(user)
+    puts "\n\nThank you, #{user_first_name(user)}, please select from the following options: "
+    puts "\t 1. Update user info"
+    puts "\t 2. Close bank account"
+    puts "\t 3. Return to main menu"
+
+    new_menu = gets.chomp
+    case new_menu
+    when "1"
+      update_account(user)
+    when "2"
+      if !Account.find_by(investor_id: user.id)
+        puts "Your account has already been closed."
+        call_options(user)
+      else
+        close_bank_account(user)
+      end
+    when "3"
+      call_options(user)
+    else
+      puts "Invalid input. Please pick a number from this list."
+      sleep(2)
+      menu_settings(user)
+    end
+
+  end
+
+  def update_account(user)
+    puts "***********************************************************\n"
+    puts "\n\nThank you, #{user_first_name(user)}, please select from the following options: "
+    puts "\t 1. Update username"
+    puts "\t 2. Update age"
+    puts "\t 3. Update address"
+    puts "\t 4. Update email"
+    puts "\t 5. Update phone number"
+    puts "\t 6. Return to main menu"
+
+    update = user_imput
+
+    case update
+    when "1"
+      puts "\n\nThank you, #{user_first_name(user)}, to update your username please "
+      puts "contact our customer service department by phone. "
+      puts "\tPhone number: 1-800-DAY-TRADE"
+      update_account(user)
+    when '2'
+      puts "\nWhat is your age, #{user_first_name(user)}?"
+      response1 = user_imput
+      user.age = response1
+      user.save
+      update_account(user)
+    when '3'
+      puts "\nWhat is your address, #{user_first_name(user)}?"
+      response2 = user_imput
+      user.address = response2
+
+      puts "\nWhat city do you live in, #{user_first_name(user)}?"
+      response3 = user_imput
+      user.city = response3
+
+      puts "\nWhat state do you live in, #{user_first_name(user)}? ex. GA, or CA"
+      response4 = user_imput
+      user.state = response4
+      user.save
+      update_account(user)
+    when '4'
+      puts "\nWhat is your email address, #{first_name}?"
+      response5 = user_imput
+      user.email = response5
+      user.save
+      update_account(user)
+    when '5'
+      puts "\nWhat is your phone number, #{first_name}?"
+      response6 = user_imput
+      user.phone_num = response6
+      user.save
+      update_account(user)
+    when '6'
+      call_options(user)
+    else
+      puts "Invalid input. Please pick a number from this list."
+      sleep(2)
+      menu_settings(user)
+    end
+  end
+
+  def close_bank_account(user)
+    puts "***********************************************************\n"
+    puts "If you close your bank account with us, you will "
+    puts "no longer be able to place any stock trades.  "
+    puts "\nYou MUST sell all current stocks before closing this account. "
+    puts "\nAre you sure you want to continue (Y/N) "
+
+    delete_account = user_imput.downcase
+
+    if delete_account == 'y'
+      user_account = Account.find_by(investor_id: user.id)
+      user_account.destroy
+
+      puts "Your account information has been removed from our system."
+      call_options(user)
+    elsif delete_account == 'n'
+      binding.pry
+      call_options(user)
+    else
+      puts "Invalid input. Please pick Y or N."
+      sleep(2)
+      close_bank_account(user)
+    end
+
   end
 
 # --------------------- end DayTrader fuctionality ----------------

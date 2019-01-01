@@ -2,7 +2,7 @@ class Trade < ActiveRecord::Base
 
   belongs_to :stock
   belongs_to :investor
-  has_many :account, through: :investor
+  has_many :accounts, through: :investors
 
   # allows user to buy a new stock and creates a record of it in the trade class
   def self.buy_stock(user, quote, buy_trade)

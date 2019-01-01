@@ -1,8 +1,8 @@
 class Investor < ActiveRecord::Base
 
-  has_many :trade
-  has_many :stock, through: :trade
-  has_many :account
+  has_many :trades
+  has_many :stocks, through: :trades
+  has_many :accounts
 
   #----------- end class methods -----------------------
   #----------- start instance methods ------------------

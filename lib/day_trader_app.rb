@@ -284,13 +284,13 @@
       user.save
       update_account(user)
     when '4'
-      puts "\nWhat is your email address, #{first_name}?"
+      puts "\nWhat is your email address, #{user_first_name(user)}?"
       response5 = user_imput
       user.email = response5
       user.save
       update_account(user)
     when '5'
-      puts "\nWhat is your phone number, #{first_name}?"
+      puts "\nWhat is your phone number, #{user_first_name(user)}?"
       response6 = user_imput
       user.phone_num = response6
       user.save

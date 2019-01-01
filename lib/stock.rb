@@ -1,7 +1,7 @@
 class Stock < ActiveRecord::Base
 
-  has_many :trade
-  has_many :investor, through: :trade
+  has_many :trades
+  has_many :investors, through: :trades
 
   #returns total number of shares_available for all stocks
   def self.total_available_shares

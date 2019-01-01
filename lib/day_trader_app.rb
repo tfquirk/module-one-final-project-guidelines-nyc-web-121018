@@ -14,7 +14,7 @@
     end
   end
 
-  def create_new_user(username)
+  def create_new_user(username) #only called when username does not exist in DB
     new_user = Investor.new
     new_user.name = username
     first_name = username.split(" ").first
@@ -48,7 +48,7 @@
     Investor.find_by(name: username)
   end
 
-  def create_new_bank_account(investor)
+  def create_new_bank_account(investor)    #called when user created or user needs a bank account associated
     new_investor = Account.create(balance: rand(500..20000), investor_id: investor.id, bank_id: rand(6))
     sleep(0.8)
     puts "."
@@ -90,6 +90,7 @@
     puts "Hello, welcome to DayTrader. Please sign in with your name (first + last): "
   end
 
+  # primary account menu
   def options(user)
     puts "***********************************************************\n"
     puts "\n\nWhat would you like to do, #{user_first_name(user)}?"
@@ -105,7 +106,7 @@
 
     case input
     when "1"
-      if !Account.find_by(investor_id: user.id)
+      if !Account.find_by(investor_id: user.id)   # if user does not have a linked bank account this condition will run
         puts "***********************************************************"
         puts "\n\nYour bank account must be linked to retrieve your balance."
         puts "Would you like to link your bank account? (Y/N)"
@@ -122,16 +123,16 @@
           sleep(2)
           call_options(user)
         end
-      else
+      else     # else bank account balance is returned
         puts "\n\n#{user_first_name(user)}, your current balance is:     $#{user.balance}"
         call_options(user)
       end
-    when "2"
+    when "2"   # Finds all stocks owned by a user, and returns them (if any) with analysis
       puts "\n\n#{user_first_name(user)}, here are the current stocks you own: "
       user.my_stocks_analysis
       sleep(3)
       options(user)
-    when "3"
+    when "3"    # allows user to research any stock symbol. Calls IEX API
       puts "\nWhich stock would you like to research? (stock symbol)"
       answer = gets.chomp
       quote = Stock.stock_quote(answer)
@@ -139,7 +140,7 @@
       sleep(4)
       call_options(user)
     when "4"
-      if !Account.find_by(investor_id: user.id)
+      if !Account.find_by(investor_id: user.id)      #if user does not have linked bank account then this condition is called
         puts "You must link a bank account to buy stocks."
         puts "Would you like to link your bank account? (Y/N)"
         answer = user_imput.downcase
@@ -155,11 +156,10 @@
           sleep(2)
           call_options(user)
         end
-      else
+      else         # else user buys a stock
         puts "\nWhich stock would you like to purchase? (stock symbol)"
         answer = gets.chomp
         quote = Stock.stock_quote(answer)
-        #tell how much your balance is and cost to tell how much you can afford?
         puts "\nHow many shares would you like to purchase? (number)"
         number = gets.chomp
         stock = Stock.find_or_create_stock_from_quote(quote)
@@ -169,7 +169,8 @@
         call_options(user)
       end
     when "5"
-      if !Account.find_by(investor_id: user.id)
+      if !Account.find_by(investor_id: user.id)      #if user does not have linked bank account then this condition is called
+        puts "You must link a bank account to buy stocks."
         puts "You must link a bank account to sell stocks."
         puts "Would you like to link your bank account? (Y/N)"
         answer = user_imput.downcase
@@ -185,7 +186,7 @@
           sleep(2)
           call_options(user)
         end
-      else
+      else         # else user can sell all shares or partial shares of a given stock
         sleep(0.8)
         puts "."
         sleep(0.8)
@@ -206,19 +207,19 @@
         end
         call_options(user)
       end
-    when "6"
+    when "6"     # user may call menu_settings which relates to information about their account
       menu_settings(user)
-    when "7"
+    when "7"     # exits the program
       puts "\n\nThank you. Have a great day!\n\n"
 
-    else
+    else      # if a user does not input an appropriate number, they are returned to the same main menu
       puts "Invalid input. Please pick a number from this list."
       sleep(2)
       call_options(user)
     end
   end
 
-  def menu_settings(user)
+  def menu_settings(user)     # menu for User settings from main menu
     puts "\n\nThank you, #{user_first_name(user)}, please select from the following options: "
     puts "\t 1. Update user info"
     puts "\t 2. Close bank account"
@@ -226,16 +227,16 @@
 
     new_menu = gets.chomp
     case new_menu
-    when "1"
+    when "1"   # called to allow user to update information relevant to their account (address, email, etc.)
       update_account(user)
-    when "2"
+    when "2"   # allows user to unlink their bank account (this destroys bank account info)
       if !Account.find_by(investor_id: user.id)
         puts "Your account has already been closed."
         call_options(user)
       else
         close_bank_account(user)
       end
-    when "3"
+    when "3"    # returns to main menu (options)
       call_options(user)
     else
       puts "Invalid input. Please pick a number from this list."
@@ -245,7 +246,7 @@
 
   end
 
-  def update_account(user)
+  def update_account(user)     # allows user to update account specifics
     puts "***********************************************************\n"
     puts "\n\nThank you, #{user_first_name(user)}, please select from the following options: "
     puts "\t 1. Update username"
@@ -258,18 +259,18 @@
     update = user_imput
 
     case update
-    when "1"
+    when "1"     # User cannot update username themself -- for security purposes
       puts "\n\nThank you, #{user_first_name(user)}, to update your username please "
       puts "contact our customer service department by phone. "
       puts "\tPhone number: 1-800-DAY-TRADE"
       update_account(user)
-    when '2'
+    when '2'     # update age
       puts "\nWhat is your age, #{user_first_name(user)}?"
       response1 = user_imput
       user.age = response1
       user.save
       update_account(user)
-    when '3'
+    when '3'     # update address, city, state
       puts "\nWhat is your address, #{user_first_name(user)}?"
       response2 = user_imput
       user.address = response2
@@ -283,28 +284,28 @@
       user.state = response4
       user.save
       update_account(user)
-    when '4'
+    when '4'     # update email
       puts "\nWhat is your email address, #{user_first_name(user)}?"
       response5 = user_imput
       user.email = response5
       user.save
       update_account(user)
-    when '5'
+    when '5'     # update phone number
       puts "\nWhat is your phone number, #{user_first_name(user)}?"
       response6 = user_imput
       user.phone_num = response6
       user.save
       update_account(user)
-    when '6'
+    when '6'     # return to main menu
       call_options(user)
-    else
+    else      # force user to pick from current menu
       puts "Invalid input. Please pick a number from this list."
       sleep(2)
       menu_settings(user)
     end
   end
 
-  def close_bank_account(user)
+  def close_bank_account(user)     # destroys bank account, sells all current stocks, and user cannot buy/sell stock until new bank account linked
     puts "***********************************************************\n"
     puts "If you close your bank account with us, you will "
     puts "no longer be able to place any stock trades.  "
@@ -313,17 +314,16 @@
 
     delete_account = user_imput.downcase
 
-    if delete_account == 'y'
+    if delete_account == 'y'      # destroys bank account and sells all stocks
       user_account = Account.find_by(investor_id: user.id)
       user_account.destroy
 
       puts "Your account information has been removed from our system."
       call_options(user)
-    elsif delete_account == 'n'
-      binding.pry
+    elsif delete_account == 'n'   # returns user to main menu
       call_options(user)
     else
-      puts "Invalid input. Please pick Y or N."
+      puts "Invalid input. Please pick Y or N."     # forces user to use current menu options 
       sleep(2)
       close_bank_account(user)
     end

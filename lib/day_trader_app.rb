@@ -322,8 +322,8 @@
       call_options(user)
     elsif delete_account == 'n'   # returns user to main menu
       call_options(user)
-    else
-      puts "Invalid input. Please pick Y or N."     # forces user to use current menu options 
+    else        # forces user to use current menu options 
+      puts "Invalid input. Please pick Y or N."
       sleep(2)
       close_bank_account(user)
     end

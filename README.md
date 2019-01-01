@@ -1,25 +1,29 @@
 # This is DayTrader CLI
 
+Created by: Timothy Quirk
+
 This CLI was created as a final project to completed Module 1 at the Flatiron School. For specific project requirements please refer to the 'Project Guidelines' below.
 
 This meant to be a fun way to play around with stock data, and to see how stocks change over time. I seeded the database with stock information from the IEX stock api. “Data provided for free by IEX. View IEX’s Terms of Use.” https://iextrading.com/developer/docs/#before-we-begin
 
-Investors are able to make fake trades.
+#Install
+
+To install, fork this repository and run 'bundle install' in your terminal.
+
+#Overview  
+
+Investors are able to make fake trades (using live stock data).
 Stock data is stored in the Stock class
 Trade data is stored in the Trade class
 All user account info is kept in the Account class
 
-Users sign in (or create a new account)
+Users sign in (or create a new account) with their name.
 When accounts are created, they are randomly given a bank account balance to play with.
 Stock quotes are looked up in real-time. The quotes run on a 15-min delay using IEXtrading information.
-
-
-
-
-
-
-
-
+For a trade to be completed, the user has to have the appropriate funds to cover the cost of the trade.
+Once users own a stock, they can sell all shares or partial shares as they wish.
+The program will do an analysis of your stocks and their performance.
+You may research (get stock quotes) on any stock you wish.
 
 
 

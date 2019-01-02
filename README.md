@@ -6,11 +6,11 @@ This CLI was created as a final project to completed Module 1 at the Flatiron Sc
 
 This meant to be a fun way to play around with stock data, and to see how stocks change over time. I seeded the database with stock information from the IEX stock api. “Data provided for free by IEX. View IEX’s Terms of Use.” https://iextrading.com/developer/docs/#before-we-begin
 
-#Install
+## Install
 
 To install, fork this repository and run 'bundle install' in your terminal.
 
-#Overview  
+## Overview  
 
 Investors are able to make fake trades (using live stock data).
 Stock data is stored in the Stock class

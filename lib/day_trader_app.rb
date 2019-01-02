@@ -313,7 +313,8 @@
     puts "If you close your bank account with us, you will "
     puts "no longer be able to place any stock trades.  "
     puts "\nYou MUST sell all current stocks before closing this account. "
-    puts "\nAre you sure you want to continue (Y/N) "
+    puts "\nSelecting Y will ATOMATICALLY sell all of your stocks. "
+    puts "Are you sure you want to continue? (Y/N) "
 
     delete_account = user_imput.downcase
 

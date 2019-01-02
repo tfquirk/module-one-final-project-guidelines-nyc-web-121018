@@ -115,6 +115,7 @@
         case answer
         when 'y'
           create_new_bank_account(user)
+          call_options(user)
         when 'n'
           puts "You are not able to purchase stock at this time. "
           call_options(user)
@@ -148,6 +149,7 @@
         case answer
         when 'y'
           create_new_bank_account(user)
+          call_options(user)
         when 'n'
           puts "You are not able to purchase stock at this time. "
           call_options(user)
@@ -178,6 +180,7 @@
         case answer
         when 'y'
           create_new_bank_account(user)
+          call_options(user)
         when 'n'
           puts "You are not able to purchase stock at this time. "
           call_options(user)
@@ -316,13 +319,14 @@
 
     if delete_account == 'y'      # destroys bank account and sells all stocks
       user_account = Account.find_by(investor_id: user.id)
+      Trade.sell_all_stocks(user)
       user_account.destroy
 
       puts "Your account information has been removed from our system."
       call_options(user)
     elsif delete_account == 'n'   # returns user to main menu
       call_options(user)
-    else        # forces user to use current menu options 
+    else        # forces user to use current menu options
       puts "Invalid input. Please pick Y or N."
       sleep(2)
       close_bank_account(user)

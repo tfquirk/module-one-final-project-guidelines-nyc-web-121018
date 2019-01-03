@@ -12,13 +12,13 @@ To install, fork this repository and run 'bundle install' in your terminal.
 
 ## Demo
 
-
+Please click on the image below if you would like to see how the app functions:
 [![alt text][image]][reference link]
 
 [image]: https://img.youtube.com/vi/VJFTkUNRDY8/0.jpg "DayTrader CLI Demo Video"
 [reference link]: https://www.youtube.com/watch?v=VJFTkUNRDY8
 
-Please watch the above video if you would like to see how the app functions.
+
 
 ## Overview  
 

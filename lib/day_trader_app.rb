@@ -87,7 +87,7 @@
 
 
   def welcome
-    puts "Hello, welcome to DayTrader. Please sign in with your name (first + last): "
+    puts "\nHello, welcome to DayTrader. Please sign in with your name (first + last): "
   end
 
   # primary account menu

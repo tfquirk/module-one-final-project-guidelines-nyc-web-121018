@@ -10,6 +10,12 @@ This meant to be a fun way to play around with stock data, and to see how stocks
 
 To install, fork this repository and run 'bundle install' in your terminal.
 
+## Demo
+
+[![Alt text](https://youtu.be/VJFTkUNRDY8/0.jpg)](https://www.youtube.com/watch?v=VJFTkUNRDY8)
+
+Please watch the above video if you would like to see how the app functions.
+
 ## Overview  
 
 Investors are able to make fake trades (using live stock data).

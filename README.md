@@ -12,7 +12,7 @@ To install, fork this repository and run 'bundle install' in your terminal.
 
 ## Demo
 
-[![Alt text](https://youtu.be/VJFTkUNRDY8/0.jpg)](https://www.youtube.com/watch?v=VJFTkUNRDY8)
+[![Alt text](https://img.youtube.com/vi/VJFTkUNRDY8/0.jpg)](https://www.youtube.com/watch?v=VJFTkUNRDY8)
 
 Please watch the above video if you would like to see how the app functions.
 

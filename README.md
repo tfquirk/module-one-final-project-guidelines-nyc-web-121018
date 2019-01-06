@@ -6,9 +6,21 @@ This CLI was created as a final project to completed Module 1 at the Flatiron Sc
 
 This meant to be a fun way to play around with stock data, and to see how stocks change over time. I seeded the database with stock information from the IEX stock api. “Data provided for free by IEX. View IEX’s Terms of Use.” https://iextrading.com/developer/docs/#before-we-begin
 
-## Install
 
-To install, fork this repository and run 'bundle install' in your terminal.
+## Command line setup / Install
+
+After cloning the repository from github, switch to the DayTrader directory:
+
+  cd /path/to/module-one-final-project-guidelines-nyc-web-121018
+
+Install the necessary gems with 'bundle install' in your terminal.
+
+Run the 'bin/run.rb' file with:
+    ruby 'bin/run.rb'
+
+### Create your user(s)
+
+A user is created by simply running the program and entering your first and last name when prompted. Once created, you will be able to sign in with that name combination again in the future. 
 
 ## Demo
 
